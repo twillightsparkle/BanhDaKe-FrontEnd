@@ -54,6 +54,7 @@ export default function Cart() {
                   <button 
                     onClick={() => handleQuantityChange(item.product._id, item.selectedSize, item.quantity - 1)}
                     disabled={item.quantity <= 1}
+                    className='quantity-btn quantity-decrease'
                   >
                     -
                   </button>
@@ -67,6 +68,7 @@ export default function Cart() {
                   <button 
                     onClick={() => handleQuantityChange(item.product._id, item.selectedSize, item.quantity + 1)}
                     disabled={item.quantity >= 99}
+                    className="quantity-btn quantity-increase"
                   >
                     +
                   </button>

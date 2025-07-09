@@ -1,0 +1,60 @@
+/* Utility */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  color: #0e172c;
+}
+
+.breadcrumb a {
+  color: #0e172c;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  color: #0e172c;
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  margin: 0 0.5rem;
+  color: #0e172c;
+}
+
+.current-page {
+  color: #0e172c;
+  font-weight: 500;
+}
+
+/* Back Navigation */
+.back-navigation {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.back-to-products {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  background: #0e172c;
+  color: #fffffe;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.back-to-products:hover {
+  background: #0e172c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(14, 23, 44, 0.2);
+}

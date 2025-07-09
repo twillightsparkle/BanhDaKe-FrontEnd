@@ -178,6 +178,7 @@ export default function ProductDetail() {
             <div className="quantity-controls">
               <button 
                 type="button" 
+                className="quantity-btn quantity-decrease"
                 onClick={() => handleQuantityChange(-1)}
                 disabled={quantity <= 1}
               >
@@ -208,6 +209,7 @@ export default function ProductDetail() {
               />
               <button 
                 type="button" 
+                className="quantity-btn quantity-increase"
                 onClick={() => handleQuantityChange(1)}
                 disabled={quantity >= 99}
               >

@@ -1,0 +1,134 @@
+/* Product Details Tabs */
+.product-details-tabs {
+  background: #fec7d7;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  border: 1px solid #0e172c;
+}
+
+.tab-headers {
+  display: flex;
+  background: #fec7d7;
+}
+
+.tab-header {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  color: #0e172c;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-header:hover {
+  background: #fec7d7;
+  color: #0e172c;
+}
+
+.tab-header.active {
+  background: #fec7d7;
+  color: #0e172c;
+  border-bottom-color: #0e172c;
+}
+
+.tab-content {
+  padding: 2rem;
+}
+
+.description-content p {
+  color: #0e172c;
+  line-height: 1.8;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.ingredients-content h3,
+.specifications-content h3 {
+  color: #0e172c;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.ingredients-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredients-content li {
+  padding: 0.5rem 0;
+  color: #0e172c;
+  border-bottom: 1px solid #0e172c;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.ingredients-content li:before {
+  content: "•";
+  color: #0e172c;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.ingredients-content li:last-child {
+  border-bottom: none;
+}
+
+.specifications-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.specifications-content tr {
+  border-bottom: 1px solid #0e172c;
+}
+
+.specifications-content tr:last-child {
+  border-bottom: none;
+}
+
+.spec-key,
+.spec-value {
+  padding: 0.75rem 0;
+  color: #0e172c;
+}
+
+.spec-key {
+  font-weight: 500;
+  width: 30%;
+  color: #0e172c;
+}
+
+.spec-value {
+  color: #0e172c;
+}
+
+/* Sizes Tab Content */
+.available-sizes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.size-badge {
+  background: #fec7d7;
+  color: #0e172c;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #0e172c;
+}
+
+.size-guide {
+  color: #0e172c;
+  font-style: italic;
+  margin: 0;
+}

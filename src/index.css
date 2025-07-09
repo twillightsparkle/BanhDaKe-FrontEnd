@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #0e172c;
+  background-color: #fec7d7;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,11 +15,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #0e172c;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #0e172c;
 }
 
 body {
@@ -42,12 +42,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #0e172c;
+  color: #fffffe;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #0e172c;
 }
 button:focus,
 button:focus-visible {
@@ -56,14 +57,15 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #0e172c;
+    background-color: #fec7d7;
   }
   a:hover {
-    color: #747bff;
+    color: #0e172c;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #0e172c;
+    color: #fffffe;
   }
 }
 
@@ -72,7 +74,7 @@ button:focus-visible {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  color: #213547;
+  color: #0e172c;
 }
 
 .checkout-header {
@@ -93,7 +95,7 @@ button:focus-visible {
 }
 
 .order-summary {
-  background: #f5f5f5;
+  background: #fec7d7;
   padding: 20px;
   border-radius: 8px;
 }
@@ -132,18 +134,18 @@ button:focus-visible {
 
 .item-details p {
   margin: 3px 0;
-  color: #666;
+  color: #0e172c;
 }
 
 .item-price {
   font-weight: bold;
-  color: #213547 !important;
+  color: #0e172c !important;
 }
 
 .order-total {
   text-align: right;
   padding-top: 15px;
-  border-top: 2px solid #213547;
+  border-top: 2px solid #0e172c;
 }
 
 .order-total h3 {
@@ -152,7 +154,7 @@ button:focus-visible {
 }
 
 .customer-form {
-  background: #f9f9f9;
+  background: #fec7d7;
   padding: 20px;
   border-radius: 8px;
 }
@@ -170,7 +172,7 @@ button:focus-visible {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: #213547;
+  color: #0e172c;
 }
 
 .form-group input,
@@ -186,7 +188,7 @@ button:focus-visible {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #646cff;
+  border-color: #0e172c;
 }
 
 .form-actions {
@@ -197,18 +199,18 @@ button:focus-visible {
 }
 
 .back-button {
-  color: #666;
+  color: #0e172c;
   text-decoration: none;
   padding: 10px 20px;
 }
 
 .back-button:hover {
-  color: #213547;
+  color: #0e172c;
 }
 
 .place-order-btn {
-  background-color: #646cff;
-  color: white;
+  background-color: #0e172c;
+  color: #fffffe;
   border: none;
   padding: 12px 30px;
   font-size: 1.1rem;
@@ -217,7 +219,7 @@ button:focus-visible {
 }
 
 .place-order-btn:hover {
-  background-color: #535bf2;
+  background-color: #0e172c;
 }
 
 .place-order-btn:disabled {
@@ -241,8 +243,8 @@ button:focus-visible {
 
 .continue-shopping {
   display: inline-block;
-  background-color: #646cff;
-  color: white;
+  background-color: #0e172c;
+  color: #fffffe;
   padding: 12px 24px;
   text-decoration: none;
   border-radius: 4px;
@@ -250,7 +252,7 @@ button:focus-visible {
 }
 
 .continue-shopping:hover {
-  background-color: #535bf2;
+  background-color: #0e172c;
 }
 
 @media (max-width: 768px) {
