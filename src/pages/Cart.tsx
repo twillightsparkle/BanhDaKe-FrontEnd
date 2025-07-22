@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../contexts/CartContext';
+import { useLocalizedContent } from '../hooks/useLocalizedContent';
 
 export default function Cart() {
+  const { t } = useTranslation();
+  const { getLocalized } = useLocalizedContent();
   const { cartItems, updateQuantity, removeFromCart, getTotalPrice, getTotalItems } = useCart();
 
   const handleQuantityChange = (productId: string, selectedSize: string, newQuantity: number) => {
@@ -18,10 +22,10 @@ export default function Cart() {
     return (
       <div className="cart-container">
         <div className="cart-empty">
-          <h1>Giỏ hàng của bạn</h1>
-          <p>Giỏ hàng của bạn đang trống.</p>
+          <h1>{t('cart.title')}</h1>
+          <p>{t('cart.empty')}</p>
           <Link to="/products" className="continue-shopping-btn">
-            Tiếp tục mua sắm
+            {t('cart.continueShopping')}
           </Link>
         </div>
       </div>
@@ -39,11 +43,11 @@ export default function Cart() {
           {cartItems.map((item) => (
             <div key={`${item.product._id}-${item.selectedSize}`} className="cart-item">
               <div className="cart-item-image">
-                <img src={item.product.image} alt={item.product.name} />
+                <img src={item.product.image} alt={getLocalized(item.product.name)} />
               </div>
               
               <div className="cart-item-details">
-                <h3 className="cart-item-name">{item.product.name}</h3>
+                <h3 className="cart-item-name">{getLocalized(item.product.name)}</h3>
                 <p className="cart-item-size">Kích thước: {item.selectedSize}</p>
                 <p className="cart-item-price">{item.product.price.toLocaleString()}₫</p>
               </div>

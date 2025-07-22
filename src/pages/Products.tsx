@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import type { Product } from '../types';
 import { productService } from '../services/api';
+import { useLocalizedContent } from '../hooks/useLocalizedContent';
 
 const Products: React.FC = () => {
+  const { t } = useTranslation();
+  const { getLocalized } = useLocalizedContent();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,19 +28,19 @@ const Products: React.FC = () => {
     };
 
     fetchProducts();
-  }, []);return (
+  }, []);  return (
     <div className="products-container">
-      <h1>Giày thể thao nổi bật</h1>
+      <h1>{t('products.title')}</h1>
       
       {loading && (
         <div className="loading">
-          <p>Đang tải sản phẩm...</p>
+          <p>{t('common.loading')}</p>
         </div>
       )}
       
       {error && (
         <div className="error">
-          <p>Lỗi: {error}</p>
+          <p>{t('common.error')}: {error}</p>
           <p>Vui lòng kiểm tra xem server backend có đang chạy không.</p>
         </div>
       )}
@@ -44,8 +48,8 @@ const Products: React.FC = () => {
         <div className="products-grid">
           {products.map(product => (
             <Link key={product._id} to={`/product/${product._id}`} className="product-card">
-              <img src={product.image} alt={product.name} />
-              <h2>{product.name}</h2>
+              <img src={product.image} alt={getLocalized(product.name)} />
+              <h2>{getLocalized(product.name)}</h2>
               <p>{product.price.toLocaleString()}₫</p>
             </Link>
           ))}

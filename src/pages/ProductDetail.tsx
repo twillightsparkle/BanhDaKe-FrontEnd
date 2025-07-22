@@ -4,8 +4,12 @@ import type { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { useCheckout } from '../contexts/CheckoutContext';
 import { productService } from '../services/api';
+import { useTranslation } from 'react-i18next';
+import { useLocalizedContent } from '../hooks/useLocalizedContent';
 
 export default function ProductDetail() {
+  const { t } = useTranslation();
+  const { getLocalized } = useLocalizedContent();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -40,7 +44,7 @@ export default function ProductDetail() {
   }, [id]);  const handleAddToCart = () => {
     if (product && selectedSize) {
       addToCart(product, quantity, selectedSize);
-      alert(`Added ${quantity} x ${product.name} (Size: ${selectedSize}) to cart!`);
+      alert(`Added ${quantity} x ${getLocalized(product.name)} (Size: ${selectedSize}) to cart!`);
     } else if (product && !selectedSize) {
       alert('Please select a size before adding to cart.');
     }  };
@@ -106,18 +110,18 @@ export default function ProductDetail() {
     <div className="product-detail-container">
       {/* Breadcrumb */}
       <nav className="breadcrumb">
-        <Link to="/">Trang chủ</Link>
+        <Link to="/">{t('navigation.home')}</Link>
         <span className="breadcrumb-separator">›</span>
-        <Link to="/products">Sản phẩm</Link>
+        <Link to="/products">{t('navigation.products')}</Link>
         <span className="breadcrumb-separator">›</span>
-        <span className="current-page">{product.name}</span>
+        <span className="current-page">{getLocalized(product.name)}</span>
       </nav>
 
       <div className="product-detail-content">
         {/* Product Images */}
         <div className="product-images">
           <div className="main-image">
-            <img src={selectedImage} alt={product.name} />
+            <img src={selectedImage} alt={getLocalized(product.name)} />
           </div>
           {product.images.length > 1 && (
             <div className="thumbnail-images">
@@ -136,7 +140,7 @@ export default function ProductDetail() {
 
         {/* Product Info */}
         <div className="product-info">
-          <h1 className="product-title">{product.name}</h1>
+          <h1 className="product-title">{getLocalized(product.name)}</h1>
           
           <div className="product-price">
             <span className="current-price">{product.price.toLocaleString()}₫</span>
@@ -145,7 +149,7 @@ export default function ProductDetail() {
             )}
           </div>
 
-          <p className="product-short-description">{product.shortDescription}</p>
+          <p className="product-short-description">{getLocalized(product.shortDescription)}</p>
 
           <div className="product-stock">
             {product.inStock ? (
@@ -157,7 +161,7 @@ export default function ProductDetail() {
 
           {/* Size Selector */}
           <div className="size-selector">
-            <label>Kích thước:</label>
+            <label>{t('products.sizes')}</label>
             <div className="size-options">
               {product.sizes.map((size) => (
                 <button
@@ -174,7 +178,7 @@ export default function ProductDetail() {
 
           {/* Quantity Selector */}
           <div className="quantity-selector">
-            <label>Số lượng:</label>
+            <label>{t('products.quantity')}:</label>
             <div className="quantity-controls">
               <button 
                 type="button" 
@@ -219,19 +223,20 @@ export default function ProductDetail() {
           </div>
 
           {/* Add to Cart Button */}
-          <div className="action-buttons">            <button 
+          <div className="action-buttons">            
+            <button 
               className="add-to-cart-btn"
               onClick={handleAddToCart}
               disabled={!product.inStock}
             >
-              {product.inStock ? 'Thêm vào giỏ hàng' : 'Hết hàng'}
+              {product.inStock ? t('products.addToCart') : t('products.outOfStock')}
             </button>
             <button 
               className="buy-now-btn" 
               onClick={handleBuyNow}
               disabled={!product.inStock}
             >
-              {product.inStock ? 'Mua ngay' : 'Hết hàng'}
+              {product.inStock ? t('products.buyNow') : t('products.outOfStock')}
             </button>
           </div>
         </div>
@@ -242,32 +247,32 @@ export default function ProductDetail() {
             className={`tab-header ${activeTab === 'description' ? 'active' : ''}`}
             onClick={() => setActiveTab('description')}
           >
-            Mô tả chi tiết
+            {t('products.description')}
           </button>
           <button 
             className={`tab-header ${activeTab === 'sizes' ? 'active' : ''}`}
             onClick={() => setActiveTab('sizes')}
           >
-            Kích thước
+            {t('products.sizes')}
           </button>
           <button 
             className={`tab-header ${activeTab === 'specifications' ? 'active' : ''}`}
             onClick={() => setActiveTab('specifications')}
           >
-            Thông số kỹ thuật
+            {t('products.specifications')}
           </button>
         </div>
 
         <div className="tab-content">
           {activeTab === 'description' && (
             <div className="description-content">
-              <p>{product.detailDescription}</p>
+              <p>{getLocalized(product.detailDescription)}</p>
             </div>
           )}
 
           {activeTab === 'sizes' && (
             <div className="sizes-content">
-              <h3>Kích thước có sẵn:</h3>
+              <h3>{t('products.sizes')}:</h3>
               <div className="available-sizes">
                 {product.sizes.map((size, index) => (
                   <span key={index} className="size-badge">{size}</span>
@@ -281,15 +286,21 @@ export default function ProductDetail() {
 
           {activeTab === 'specifications' && (
             <div className="specifications-content">
-              <h3>Thông số kỹ thuật:</h3>
+              <h3>{t('products.specifications')}:</h3>
               <table>
                 <tbody>
-                  {Object.entries(product.specifications).map(([key, value]) => (
-                    <tr key={key}>
-                      <td className="spec-key">{key}</td>
-                      <td className="spec-value">{value}</td>
+                  {Array.isArray(product.specifications) && product.specifications.length > 0 ? (
+                    product.specifications.map((spec, index) => (
+                      <tr key={index}>
+                        <td className="spec-key">{getLocalized(spec.key)}</td>
+                        <td className="spec-value">{getLocalized(spec.value)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={2}>{t('products.noSpecifications')}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -300,7 +311,7 @@ export default function ProductDetail() {
       {/* Back to Products */}
       <div className="back-navigation">
         <Link to="/products" className="back-to-products">
-          ← Quay lại danh sách sản phẩm
+          ← {t('products.getBackToProductsList')}
         </Link>
       </div>
     </div>

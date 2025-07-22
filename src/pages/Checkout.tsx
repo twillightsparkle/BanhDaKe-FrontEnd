@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCheckout } from '../contexts/CheckoutContext';
 import { useCart } from '../contexts/CartContext';
 import { orderService } from '../services/api';
+import { useLocalizedContent } from '../hooks/useLocalizedContent';
 import type { CustomerInfo, CreateOrderRequest } from '../types';
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const { getLocalized } = useLocalizedContent();
   const { checkoutItems, clearCheckout, getTotalPrice, getOrderItems } = useCheckout();
   const { cartItems, clearCart, getTotalPrice: getCartTotalPrice } = useCart();
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -61,7 +63,7 @@ export default function Checkout() {
         ? getOrderItems()
         : cartItems.map(item => ({
             productId: item.product._id,
-            productName: item.product.name,
+            productName: getLocalized(item.product.name), // Convert localized name to string
             quantity: item.quantity,
             price: item.product.price,
             selectedSize: item.selectedSize
@@ -129,9 +131,9 @@ export default function Checkout() {
           <div className="order-items">
             {itemsToCheckout.map((item, index) => (
               <div key={`${item.product._id}-${item.selectedSize}-${index}`} className="order-item">
-                <img src={item.product.image} alt={item.product.name} className="item-image" />
+                <img src={item.product.image} alt={getLocalized(item.product.name)} className="item-image" />
                 <div className="item-details">
-                  <h3>{item.product.name}</h3>
+                  <h3>{getLocalized(item.product.name)}</h3>
                   <p>Size: {item.selectedSize}</p>
                   <p>Quantity: {item.quantity}</p>
                   <p className="item-price">{(item.product.price * item.quantity).toLocaleString()}₫</p>

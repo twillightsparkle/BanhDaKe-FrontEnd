@@ -55,6 +55,7 @@ a {
 
 .back-to-products:hover {
   background: #0e172c;
+  color: #fffffe; 
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(14, 23, 44, 0.2);
 }

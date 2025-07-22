@@ -1,0 +1,99 @@
+{
+  "navigation": {
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "cart": "Giỏ hàng",
+    "checkout": "Thanh toán",
+    "language": "Ngôn ngữ"
+  },
+  "common": {
+    "welcome": "Chào mừng",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "add": "Thêm",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "sort": "Sắp xếp",
+    "price": "Giá",
+    "quantity": "Số lượng",
+    "total": "Tổng cộng",
+    "subtotal": "Tạm tính"
+  },
+  "home": {
+    "title": "Chào mừng đến với BanhdakeShop",
+    "subtitle": "Khám phá những đôi giày tuyệt vời cho mọi dịp",
+    "featuredProducts": "Sản phẩm nổi bật",
+    "shopNow": "Mua ngay",
+    "viewAll": "Xem tất cả sản phẩm"
+  },
+  "products": {
+    "title": "Sản phẩm của chúng tôi",
+    "addToCart": "Thêm vào giỏ",
+    "outOfStock": "Hết hàng",
+    "inStock": "Còn hàng",
+    "viewDetails": "Xem chi tiết",
+    "sizes": "Kích cỡ",
+    "colors": "Màu sắc",
+    "description": "Mô tả",
+    "specifications": "Thông số kỹ thuật",
+    "reviews": "Đánh giá",
+    "relatedProducts": "Sản phẩm liên quan",
+    "buyNow": "Mua ngay",
+    "noSpecifications": "Không có thông số kỹ thuật",
+    "quantity": "Số lượng",
+    "getBackToProductsList": "Quay lại danh sách sản phẩm"
+  },
+  "cart": {
+    "title": "Giỏ hàng",
+    "empty": "Giỏ hàng của bạn đang trống",
+    "continueShopping": "Tiếp tục mua sắm",
+    "removeItem": "Xóa sản phẩm",
+    "updateQuantity": "Cập nhật số lượng",
+    "proceedToCheckout": "Tiến hành thanh toán",
+    "itemsInCart": "{{count}} sản phẩm trong giỏ",
+    "itemsInCart_plural": "{{count}} sản phẩm trong giỏ"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "billingInfo": "Thông tin thanh toán",
+    "shippingInfo": "Thông tin giao hàng",
+    "paymentMethod": "Phương thức thanh toán",
+    "orderSummary": "Tóm tắt đơn hàng",
+    "placeOrder": "Đặt hàng",
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ",
+    "city": "Thành phố",
+    "zipCode": "Mã bưu chính",
+    "country": "Quốc gia",
+    "cardNumber": "Số thẻ",
+    "expiryDate": "Ngày hết hạn",
+    "cvv": "CVV",
+    "cardholderName": "Tên chủ thẻ"
+  },
+  "errors": {
+    "required": "Trường này là bắt buộc",
+    "invalidEmail": "Vui lòng nhập địa chỉ email hợp lệ",
+    "invalidPhone": "Vui lòng nhập số điện thoại hợp lệ",
+    "networkError": "Lỗi mạng. Vui lòng thử lại.",
+    "serverError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+    "productNotFound": "Không tìm thấy sản phẩm",
+    "addToCartFailed": "Thêm sản phẩm vào giỏ hàng thất bại",
+    "checkoutFailed": "Thanh toán thất bại. Vui lòng thử lại."
+  },
+  "success": {
+    "addedToCart": "Đã thêm sản phẩm vào giỏ hàng thành công!",
+    "orderPlaced": "Đặt hàng thành công!",
+    "profileUpdated": "Cập nhật hồ sơ thành công!"
+  }
+}

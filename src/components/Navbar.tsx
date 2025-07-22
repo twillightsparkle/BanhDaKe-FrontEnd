@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../contexts/CartContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navbar() {
   const { getTotalItems } = useCart();
+  const { t } = useTranslation();
 
   return (
     <nav
@@ -48,7 +51,7 @@ export default function Navbar() {
         onMouseOver={e => (e.currentTarget.style.color = '#000')}
         onMouseOut={e => (e.currentTarget.style.color = '#4a5568')}
         >
-        Home
+        {t('navigation.home')}
         </Link>        <Link
         to="/cart"
         style={{
@@ -62,7 +65,7 @@ export default function Navbar() {
         onMouseOver={e => (e.currentTarget.style.color = '#000')}
         onMouseOut={e => (e.currentTarget.style.color = '#4a5568')}
         >
-        Cart 🛒
+        {t('navigation.cart')} 🛒
         {getTotalItems() > 0 && (
           <span
             style={{
@@ -93,11 +96,12 @@ export default function Navbar() {
           onMouseOver={e => (e.currentTarget.style.color = '#000')}
           onMouseOut={e => (e.currentTarget.style.color = '#4a5568')}
         >
-          Products
+          {t('navigation.products')}
         </Link>
       </div>
-      {/* Right: User Login Placeholder */}
-      <div>
+      {/* Right: Language Switcher and User Login */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <LanguageSwitcher />
         {/* User Login Placeholder */}
         <span style={{ color: '#a0aec0' }}>Login / Register</span>
       </div>
