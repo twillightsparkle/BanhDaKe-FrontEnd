@@ -52,7 +52,7 @@ export const CheckoutProvider: React.FC<CheckoutProviderProps> = ({ children }) 
   const getOrderItems = (): OrderItem[] => {
     return checkoutItems.map(item => ({
       productId: item.product._id,
-      productName: item.product.name,
+      productName: item.product.name.en,
       quantity: item.quantity,
       price: item.product.price,
       selectedSize: item.selectedSize
