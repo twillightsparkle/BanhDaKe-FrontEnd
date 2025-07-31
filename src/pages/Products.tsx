@@ -30,12 +30,9 @@ const Products: React.FC = () => {
     fetchProducts();
   }, []);  return (
     <div className="products-container">
-      <h1>{t('products.title')}</h1>
       
       {loading && (
-        <div className="loading">
-          <p>{t('common.loading')}</p>
-        </div>
+        <div className="loading" data-text={t('common.loading')}></div>
       )}
       
       {error && (
@@ -45,6 +42,8 @@ const Products: React.FC = () => {
         </div>
       )}
         {!loading && !error && (
+        <div>
+        <h1>{t('products.title')}</h1>
         <div className="products-grid">
           {products.map(product => (
             <Link key={product._id} to={`/product/${product._id}`} className="product-card">
@@ -53,6 +52,7 @@ const Products: React.FC = () => {
               <p>{product.price.toLocaleString()}₫</p>
             </Link>
           ))}
+        </div>
         </div>
       )}
     </div>

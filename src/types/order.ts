@@ -17,14 +17,16 @@ export interface Order {
   _id?: string;
   products: OrderItem[];
   total: number;
+  shippingFee: number;
+  shippingCountry: string;
   customerInfo: CustomerInfo;
-  status: 'Pending' | 'Shipped' | 'Completed';
+  status?: 'Pending' | 'Shipped' | 'Completed';
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface CreateOrderRequest {
   products: OrderItem[];
-  total: number;
   customerInfo: CustomerInfo;
+  shippingCountry: string;
 }

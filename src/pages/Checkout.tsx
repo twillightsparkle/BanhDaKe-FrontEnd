@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCheckout } from '../contexts/CheckoutContext';
 import { useCart } from '../contexts/CartContext';
 import { orderService } from '../services/api';
 import { useLocalizedContent } from '../hooks/useLocalizedContent';
@@ -9,8 +8,7 @@ import type { CustomerInfo, CreateOrderRequest } from '../types';
 export default function Checkout() {
   const navigate = useNavigate();
   const { getLocalized } = useLocalizedContent();
-  const { checkoutItems, clearCheckout, getTotalPrice, getOrderItems } = useCheckout();
-  const { cartItems, clearCart, getTotalPrice: getCartTotalPrice } = useCart();
+  const { cartItems, clearCart, getTotalPrice, shippingCountry } = useCart();
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: '',
     email: '',
@@ -20,24 +18,12 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Determine if we're checking out from cart or direct buy
-  const isDirectBuy = checkoutItems.length > 0;
-  const itemsToCheckout = isDirectBuy ? checkoutItems : cartItems;
-  const totalPrice = isDirectBuy ? getTotalPrice() : getCartTotalPrice();
-
-  // Clear checkout items if coming from cart to ensure cart takes precedence
-  useEffect(() => {
-    if (cartItems.length > 0 && checkoutItems.length > 0) {
-      clearCheckout();
-    }
-  }, [cartItems, checkoutItems, clearCheckout]);
-
   // Redirect if no items to checkout
   useEffect(() => {
-    if (itemsToCheckout.length === 0) {
+    if (cartItems.length === 0) {
       navigate('/products');
     }
-  }, [itemsToCheckout, navigate]);
+  }, [cartItems, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -58,38 +44,32 @@ export default function Checkout() {
         throw new Error('Please fill in all required fields');
       }
 
-      // Prepare order items
-      const orderItems = isDirectBuy 
-        ? getOrderItems()
-        : cartItems.map(item => ({
-            productId: item.product._id,
-            productName: getLocalized(item.product.name), // Convert localized name to string
-            quantity: item.quantity,
-            price: item.product.price,
-            selectedSize: item.selectedSize
-          }));
+      // Prepare order items from cart
+      const orderItems = cartItems.map(item => ({
+        productId: item.product._id,
+        productName: getLocalized(item.product.name),
+        quantity: item.quantity,
+        price: item.product.price,
+        selectedSize: item.selectedSize
+      }));
 
       // Create order request
       const orderRequest: CreateOrderRequest = {
         products: orderItems,
-        total: totalPrice,
         customerInfo: {
           name: customerInfo.name.trim(),
           email: customerInfo.email.trim(),
           phone: customerInfo.phone?.trim(),
           address: customerInfo.address.trim()
-        }
+        },
+        shippingCountry: shippingCountry || 'VN' // Use selected country from cart or default to VN
       };
 
       // Submit order
       const order = await orderService.createOrder(orderRequest);
       
-      // Clear checkout/cart items
-      if (isDirectBuy) {
-        clearCheckout();
-      } else {
-        clearCart();
-      }
+      // Clear cart items
+      clearCart();
 
       // Show success message and redirect
       alert(`Order placed successfully! Order ID: ${order._id}`);
@@ -103,7 +83,7 @@ export default function Checkout() {
     }
   };
 
-  if (itemsToCheckout.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="checkout-container">
         <div className="empty-checkout">
@@ -121,7 +101,7 @@ export default function Checkout() {
     <div className="checkout-container">
       <div className="checkout-header">
         <h1>Checkout</h1>
-        <p>{isDirectBuy ? 'Complete your purchase' : 'Complete your order from cart'}</p>
+        <p>Complete your order from cart</p>
       </div>
 
       <div className="checkout-content">
@@ -129,7 +109,7 @@ export default function Checkout() {
         <div className="order-summary">
           <h2>Order Summary</h2>
           <div className="order-items">
-            {itemsToCheckout.map((item, index) => (
+            {cartItems.map((item, index) => (
               <div key={`${item.product._id}-${item.selectedSize}-${index}`} className="order-item">
                 <img src={item.product.image} alt={getLocalized(item.product.name)} className="item-image" />
                 <div className="item-details">
@@ -142,7 +122,7 @@ export default function Checkout() {
             ))}
           </div>
           <div className="order-total">
-            <h3>Total: {totalPrice.toLocaleString()}₫</h3>
+            <h3>Total: {getTotalPrice().toLocaleString()}₫</h3>
           </div>
         </div>
 
@@ -207,8 +187,8 @@ export default function Checkout() {
             </div>
 
             <div className="form-actions">
-              <Link to={isDirectBuy ? `/product/${checkoutItems[0]?.product._id}` : '/cart'} className="back-button">
-                ← Back
+              <Link to="/cart" className="back-button">
+                ← Back to Cart
               </Link>
               <button type="submit" className="place-order-btn" disabled={isSubmitting}>
                 {isSubmitting ? 'Placing Order...' : 'Place Order'}

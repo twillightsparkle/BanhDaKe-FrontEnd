@@ -16,6 +16,9 @@ interface CartContextType {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getTotalWeight: () => number;
+  shippingCountry: string | null;
+  setShippingCountry: (country: string | null) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -34,6 +37,7 @@ interface CartProviderProps {
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [shippingCountry, setShippingCountry] = useState<string | null>(null);
   const addToCart = (product: Product, quantity: number, selectedSize: string) => {
     setCartItems(prevItems => {
       const existingItemIndex = prevItems.findIndex(
@@ -41,13 +45,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       );
 
       if (existingItemIndex > -1) {
-        // Update quantity if item already exists
+        // Update quantity if item already exists - create new array and new object
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += quantity;
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + quantity
+        };
         return updatedItems;
       } else {
         // Add new item
-        return [...prevItems, { product, quantity, selectedSize }];
+        const newItem = { product, quantity, selectedSize };
+        return [...prevItems, newItem];
       }
     });
   };
@@ -87,6 +95,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   };
 
+  const getTotalWeight = () => {
+    // Calculate total weight using actual product weights (in grams)
+    return cartItems.reduce((total, item) => total + (item.product.weight * item.quantity), 0);
+  };
+
   const value: CartContextType = {
     cartItems,
     addToCart,
@@ -95,6 +108,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     clearCart,
     getTotalItems,
     getTotalPrice,
+    getTotalWeight,
+    shippingCountry,
+    setShippingCountry,
   };
 
   return (

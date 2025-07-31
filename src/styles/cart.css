@@ -206,3 +206,64 @@
     align-items: stretch;
   }
 }
+
+/* Updated Shipping Selection Styles */
+.shipping-selection {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(14, 23, 44, 0.1);
+}
+
+.shipping-selection h4 {
+  margin: 0 0 1rem 0;
+  color: #0e172c;
+  font-size: 1.1rem;
+}
+
+.country-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  color: #0e172c;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  margin-bottom: 1rem;
+}
+
+.country-select:focus {
+  outline: none;
+  border-color: #0e172c;
+}
+
+.shipping-info {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.shipping-info p {
+  margin: 0.25rem 0;
+  color: #0e172c;
+  font-size: 0.9rem;
+}
+
+.shipping-selection .error {
+  color: #d32f2f;
+  margin: 0;
+  font-style: italic;
+}
+
+.checkout-btn.disabled {
+  background: #ccc !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+.checkout-btn.disabled:hover {
+  background: #ccc !important;
+}

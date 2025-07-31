@@ -1,5 +1,5 @@
 import { apiRequest, API_CONFIG } from '../config/api';
-import type { Product, CreateOrderRequest, Order } from '../types';
+import type { Product, Order, CreateOrderRequest, ShippingFee } from '../types';
 
 // Product API services
 export const productService = {
@@ -37,12 +37,8 @@ export const productService = {
   },
 };
 
-// Order API services (for future use)
+// Order API services
 export const orderService = {
-  // Get all orders
-  getAllOrders: async () => {
-    return apiRequest(API_CONFIG.ENDPOINTS.ORDERS);
-  },
   // Create new order
   createOrder: async (orderData: CreateOrderRequest): Promise<Order> => {
     return apiRequest(API_CONFIG.ENDPOINTS.ORDERS, {
@@ -50,16 +46,29 @@ export const orderService = {
       body: JSON.stringify(orderData),
     });
   },
-
-  // Get order by ID
-  getOrderById: async (id: string) => {
-    return apiRequest(`${API_CONFIG.ENDPOINTS.ORDERS}/${id}`);
-  },
 };
 
 // Health check service
 export const healthService = {
   checkHealth: async () => {
     return apiRequest(API_CONFIG.ENDPOINTS.HEALTH);
+  },
+};
+
+// Shipping API services
+export const shippingService = {
+  // Get all shipping fees (for users)
+  getAllShippingFees: async (): Promise<ShippingFee[]> => {
+    return apiRequest(`${API_CONFIG.ENDPOINTS.SHIPPING}/fees`);
+  },
+
+  // Get list of available shipping countries
+  getCountries: async (): Promise<string[]> => {
+    return apiRequest(`${API_CONFIG.ENDPOINTS.SHIPPING}/countries`);
+  },
+
+  // Get shipping rates for a specific country
+  getRatesForCountry: async (country: string): Promise<ShippingFee> => {
+    return apiRequest(`${API_CONFIG.ENDPOINTS.SHIPPING}/rates/${country}`);
   },
 };

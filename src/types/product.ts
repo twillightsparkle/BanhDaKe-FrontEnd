@@ -12,7 +12,6 @@ export type Product = {
   _id: string; // MongoDB ObjectId as string
   name: LocalizedString;
   price: number;
-  originalPrice?: number;
   image: string;
   images: string[];
   shortDescription: LocalizedString;
@@ -20,7 +19,7 @@ export type Product = {
   sizes: string[];
   specifications: ProductSpecification[];
   inStock: boolean;
-  stock: number; // Add stock field to match backend
+  weight: number; // in grams
   createdAt: string; // MongoDB timestamps
   updatedAt: string;
 };

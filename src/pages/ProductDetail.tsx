@@ -2,7 +2,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
-import { useCheckout } from '../contexts/CheckoutContext';
 import { productService } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedContent } from '../hooks/useLocalizedContent';
@@ -13,7 +12,6 @@ export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const { addSingleItemToCheckout } = useCheckout();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
@@ -51,10 +49,9 @@ export default function ProductDetail() {
 
   const handleBuyNow = () => {
     if (product && selectedSize) {
-      // Add the single item to checkout context
-      addSingleItemToCheckout(product, quantity, selectedSize);
-      // Navigate to checkout page
-      navigate('/checkout');
+      // Add the item to cart and navigate to cart
+      addToCart(product, quantity, selectedSize);
+      navigate('/cart');
     } else if (product && !selectedSize) {
       alert('Please select a size before buying.');
     }
@@ -144,9 +141,6 @@ export default function ProductDetail() {
           
           <div className="product-price">
             <span className="current-price">{product.price.toLocaleString()}₫</span>
-            {product.originalPrice && (
-              <span className="original-price">{product.originalPrice.toLocaleString()}₫</span>
-            )}
           </div>
 
           <p className="product-short-description">{getLocalized(product.shortDescription)}</p>
