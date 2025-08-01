@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useLocalizedContent } from '../hooks/useLocalizedContent';
 import { shippingService } from '../services/api';
 import type { ShippingFeeChoice } from '../types';
@@ -10,6 +11,7 @@ import '../styles/cart.css';
 export default function Cart() {
   const { t } = useTranslation();
   const { getLocalized } = useLocalizedContent();
+  const { user } = useAuth();
   const { 
     cartItems, 
     updateQuantity, 
@@ -213,18 +215,33 @@ export default function Cart() {
               <span>{getTotalWithShipping().toLocaleString()}₫</span>
             </div>
             <div className="cart-actions">
-              <Link 
-                to="/checkout" 
-                className={`checkout-btn ${!shippingCountry ? 'disabled' : ''}`}
-                onClick={(e) => {
-                  if (!shippingCountry) {
-                    e.preventDefault();
-                    alert('Vui lòng chọn quốc gia giao hàng trước khi thanh toán');
-                  }
-                }}
-              >
-                Tiến hành thanh toán
-              </Link>
+              {user ? (
+                <Link 
+                  to="/checkout" 
+                  className={`checkout-btn ${!shippingCountry ? 'disabled' : ''}`}
+                  onClick={(e) => {
+                    if (!shippingCountry) {
+                      e.preventDefault();
+                      alert('Vui lòng chọn quốc gia giao hàng trước khi thanh toán');
+                    }
+                  }}
+                >
+                  Tiến hành thanh toán
+                </Link>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Link 
+                    to="/login" 
+                    state={{ from: { pathname: '/checkout' } }}
+                    className="checkout-btn"
+                  >
+                    Đăng nhập để thanh toán
+                  </Link>
+                  <p style={{ fontSize: '12px', color: '#666', textAlign: 'center', margin: 0 }}>
+                    Bạn cần đăng nhập để tiến hành thanh toán
+                  </p>
+                </div>
+              )}
               <Link to="/products" className="continue-shopping-btn">
                 Tiếp tục mua sắm
               </Link>

@@ -4,6 +4,9 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Products from './pages/Products';
+import Login from './components/Login';
+import Register from './components/Register';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function AppRoutes() {
   return (
@@ -12,7 +15,13 @@ export default function AppRoutes() {
       <Route path="/product/:id" element={<ProductDetail />} /> {/* id is MongoDB ObjectId */}
       <Route path="/products" element={<Products />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/checkout" element={
+        <ProtectedRoute>
+          <Checkout />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }

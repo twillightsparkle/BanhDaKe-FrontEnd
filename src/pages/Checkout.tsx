@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { orderService } from '../services/api';
 import { useLocalizedContent } from '../hooks/useLocalizedContent';
 import type { CustomerInfo, CreateOrderRequest } from '../types';
@@ -9,9 +10,10 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { getLocalized } = useLocalizedContent();
   const { cartItems, clearCart, getTotalPrice, shippingCountry } = useCart();
+  const { user } = useAuth();
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
-    name: '',
-    email: '',
+    name: user?.displayName || '',
+    email: user?.email || '',
     phone: '',
     address: ''
   });
