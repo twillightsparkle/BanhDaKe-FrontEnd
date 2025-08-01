@@ -6,28 +6,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyB1TaaLTonoKu_GzV6QAs5A3aMZ6-52gRo",
+  authDomain: "banhdake-b24a5.firebaseapp.com",
+  projectId: "banhdake-b24a5",
+  storageBucket: "banhdake-b24a5.firebasestorage.app",
+  messagingSenderId: "980315726724",
+  appId: "1:980315726724:web:0a9d76df3214c5e78073d1"
 };
-
-// Validate that all required environment variables are present
-const requiredEnvVars = [
-  'VITE_FIREBASE_API_KEY',
-  'VITE_FIREBASE_AUTH_DOMAIN', 
-  'VITE_FIREBASE_PROJECT_ID',
-  'VITE_FIREBASE_STORAGE_BUCKET',
-  'VITE_FIREBASE_MESSAGING_SENDER_ID',
-  'VITE_FIREBASE_APP_ID'
-];
-
-const missingVars = requiredEnvVars.filter(varName => !import.meta.env[varName]);
-if (missingVars.length > 0) {
-  throw new Error(`Missing required Firebase environment variables: ${missingVars.join(', ')}`);
-}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
