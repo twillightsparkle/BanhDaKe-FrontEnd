@@ -3,6 +3,8 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import MyOrders from './pages/MyOrders';
+import OrderDetail from './pages/OrderDetail';
 import Products from './pages/Products';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -20,6 +22,16 @@ export default function AppRoutes() {
       <Route path="/checkout" element={
         <ProtectedRoute>
           <Checkout />
+        </ProtectedRoute>
+      } />
+      <Route path="/orders" element={
+        <ProtectedRoute>
+          <MyOrders />
+        </ProtectedRoute>
+      } />
+      <Route path="/orders/:orderId" element={
+        <ProtectedRoute>
+          <OrderDetail />
         </ProtectedRoute>
       } />
     </Routes>

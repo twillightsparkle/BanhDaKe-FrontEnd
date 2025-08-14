@@ -53,7 +53,7 @@ export default function Cart() {
     if (shippingCountry) {
       const selectedFee = shippingFees.find(fee => fee.country === shippingCountry);
       if (selectedFee) {
-        const totalWeight = getTotalWeight()/1000; // Convert grams to kg
+        const totalWeight = getTotalWeight(); // Get total weight in kg
         const calculatedFee = selectedFee.baseFee + (selectedFee.perKgRate * totalWeight);
         setShippingFee(calculatedFee);
       }
@@ -199,7 +199,7 @@ export default function Cart() {
               
               {shippingCountry && (
                 <div className="shipping-info">
-                  <p><strong>Trọng lượng ước tính:</strong> {(getTotalWeight() / 1000).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 0 })} kg</p>
+                  <p><strong>Trọng lượng ước tính:</strong> {(getTotalWeight()).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 0 })} kg</p>
                   <p><strong>Phí cơ bản:</strong> {shippingFees.find(f => f.country === shippingCountry)?.baseFee.toLocaleString()}₫</p>
                   <p><strong>Phí theo kg:</strong> {shippingFees.find(f => f.country === shippingCountry)?.perKgRate.toLocaleString()}₫/kg</p>
                 </div>

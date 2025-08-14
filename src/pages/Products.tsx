@@ -12,6 +12,24 @@ const Products: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Helper function to get minimum price from product variations
+  const getMinPrice = (product: Product): number => {
+    if (!product.variations || product.variations.length === 0) {
+      return 0;
+    }
+    
+    let minPrice = Infinity;
+    product.variations.forEach(variation => {
+      variation.sizeOptions.forEach(sizeOption => {
+        if (sizeOption.price < minPrice) {
+          minPrice = sizeOption.price;
+        }
+      });
+    });
+    
+    return minPrice === Infinity ? 0 : minPrice;
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -49,7 +67,7 @@ const Products: React.FC = () => {
             <Link key={product._id} to={`/product/${product._id}`} className="product-card">
               <img src={product.image} alt={getLocalized(product.name)} />
               <h2>{getLocalized(product.name)}</h2>
-              <p>{product.price.toLocaleString()}₫</p>
+              <p>From {getMinPrice(product).toLocaleString()}₫</p>
             </Link>
           ))}
         </div>

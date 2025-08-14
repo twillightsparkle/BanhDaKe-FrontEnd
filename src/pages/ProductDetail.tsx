@@ -15,10 +15,35 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
-  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColorIndex, setSelectedColorIndex] = useState<number>(-1);
+  const [selectedSizeIndex, setSelectedSizeIndex] = useState<number>(-1);
   const [activeTab, setActiveTab] = useState<'description' | 'sizes' | 'specifications'>('description');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Helper functions for new schema
+  const getCurrentVariation = () => {
+    return product?.variations[selectedColorIndex];
+  };
+
+  const getCurrentSizeOption = () => {
+    const variation = getCurrentVariation();
+    return variation?.sizeOptions[selectedSizeIndex];
+  };
+
+  const getCurrentPrice = () => {
+    const sizeOption = getCurrentSizeOption();
+    return sizeOption?.price || 0;
+  };
+
+  const getCurrentStock = () => {
+    const sizeOption = getCurrentSizeOption();
+    return sizeOption?.stock || 0;
+  };
+
+  const isInStock = () => {
+    return product?.inStock && getCurrentStock() > 0;
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -40,26 +65,55 @@ export default function ProductDetail() {
 
     fetchProduct();
   }, [id]);  const handleAddToCart = () => {
-    if (product && selectedSize) {
-      addToCart(product, quantity, selectedSize);
-      alert(`Added ${quantity} x ${getLocalized(product.name)} (Size: ${selectedSize}) to cart!`);
-    } else if (product && !selectedSize) {
+    if (product && selectedSizeIndex >= 0) {
+      const variation = getCurrentVariation();
+      const sizeOption = getCurrentSizeOption();
+      if (variation && sizeOption) {
+        // Check if quantity exceeds available stock
+        if (quantity > sizeOption.stock) {
+          alert(`Sorry, only ${sizeOption.stock} items are available in stock.`);
+          return;
+        }
+        // Create a simplified product object for cart compatibility
+        const cartProduct = {
+          ...product,
+          price: sizeOption.price // Add price for cart compatibility
+        };
+        addToCart(cartProduct, quantity, sizeOption.size.toString());
+        alert(`Added ${quantity} x ${getLocalized(product.name)} (Color: ${getLocalized(variation.color)}, Size: ${sizeOption.size}) to cart!`);
+      }
+    } else if (product && selectedSizeIndex < 0) {
       alert('Please select a size before adding to cart.');
-    }  };
+    }
+  };
 
   const handleBuyNow = () => {
-    if (product && selectedSize) {
-      // Add the item to cart and navigate to cart
-      addToCart(product, quantity, selectedSize);
-      navigate('/cart');
-    } else if (product && !selectedSize) {
+    if (product && selectedSizeIndex >= 0) {
+      const variation = getCurrentVariation();
+      const sizeOption = getCurrentSizeOption();
+      if (variation && sizeOption) {
+        // Check if quantity exceeds available stock
+        if (quantity > sizeOption.stock) {
+          alert(`Sorry, only ${sizeOption.stock} items are available in stock.`);
+          return;
+        }
+        // Create a simplified product object for cart compatibility
+        const cartProduct = {
+          ...product,
+          price: sizeOption.price // Add price for cart compatibility
+        };
+        addToCart(cartProduct, quantity, sizeOption.size.toString());
+        navigate('/cart');
+      }
+    } else if (product && selectedSizeIndex < 0) {
       alert('Please select a size before buying.');
     }
   };
 
   const handleQuantityChange = (change: number) => {
     const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= 99) {
+    const maxQuantity = Math.min(99, getCurrentStock());
+    if (newQuantity >= 1 && newQuantity <= maxQuantity) {
       setQuantity(newQuantity);
     }
   };
@@ -140,31 +194,77 @@ export default function ProductDetail() {
           <h1 className="product-title">{getLocalized(product.name)}</h1>
           
           <div className="product-price">
-            <span className="current-price">{product.price.toLocaleString()}₫</span>
-          </div>
-
-          <p className="product-short-description">{getLocalized(product.shortDescription)}</p>
-
-          <div className="product-stock">
-            {product.inStock ? (
-              <span className="in-stock">✓ Còn hàng</span>
+            {selectedSizeIndex >= 0 ? (
+              <span className="current-price">{getCurrentPrice().toLocaleString()}₫</span>
             ) : (
-              <span className="out-of-stock">✗ Hết hàng</span>
+              <span className="price-placeholder">Select size to see price</span>
             )}
           </div>
+
+          {product.shortDescription && (
+            <p className="product-short-description">{getLocalized(product.shortDescription)}</p>
+          )}
+
+          <div className="product-stock">
+            {selectedSizeIndex >= 0 ? (
+              isInStock() ? (
+                <span className="in-stock">✓ Còn hàng ({getCurrentStock()} available)</span>
+              ) : (
+                <span className="out-of-stock">✗ Hết hàng</span>
+              )
+            ) : (
+              <span className="select-size">Select size to check availability</span>
+            )}
+          </div>
+
+          {/* Color Selector */}
+          {product.variations && product.variations.length > 1 && (
+            <div className="color-selector">
+              <label>Color:</label>
+              <div className="color-options">
+                {product.variations.map((variation, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`color-option ${selectedColorIndex === index ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSelectedColorIndex(index);
+                      setSelectedSizeIndex(-1); // Reset size selection when color changes
+                      setQuantity(1); // Reset quantity when color changes
+                      // Update image if variation has one
+                      if (variation.image) {
+                        setSelectedImage(variation.image);
+                      }
+                    }}
+                  >
+                    {getLocalized(variation.color)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Size Selector */}
           <div className="size-selector">
             <label>{t('products.sizes')}</label>
             <div className="size-options">
-              {product.sizes.map((size) => (
+              {getCurrentVariation()?.sizeOptions.map((sizeOption, index) => (
                 <button
-                  key={size}
+                  key={index}
                   type="button"
-                  className={`size-option ${selectedSize === size ? 'selected' : ''}`}
-                  onClick={() => setSelectedSize(size)}
+                  className={`size-option ${selectedSizeIndex === index ? 'selected' : ''} ${sizeOption.stock === 0 ? 'out-of-stock' : ''}`}
+                  onClick={() => {
+                    setSelectedSizeIndex(index);
+                    // Adjust quantity if it exceeds the new stock limit
+                    const newStock = sizeOption.stock;
+                    if (quantity > newStock) {
+                      setQuantity(Math.min(quantity, newStock));
+                    }
+                  }}
+                  disabled={sizeOption.stock === 0}
                 >
-                  {size}
+                  {sizeOption.size}
+                  {sizeOption.stock === 0 && <span className="stock-indicator"> (Out of stock)</span>}
                 </button>
               ))}
             </div>
@@ -183,7 +283,8 @@ export default function ProductDetail() {
                 -
               </button>
               <input 
-                type="number" 
+                type="text" 
+                inputMode="numeric"
                 value={quantity === 0 ? '' : quantity}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -191,7 +292,8 @@ export default function ProductDetail() {
                     setQuantity(0);
                   } else {
                     const num = parseInt(val);
-                    if (!isNaN(num) && num <= 99) {
+                    const maxQuantity = Math.min(99, getCurrentStock());
+                    if (!isNaN(num) && num <= maxQuantity) {
                       setQuantity(num);
                     }
                   }
@@ -199,17 +301,18 @@ export default function ProductDetail() {
                 onBlur={(e) => {
                   let val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) val = 1;
-                  if (val > 99) val = 99;
+                  const maxQuantity = Math.min(99, getCurrentStock());
+                  if (val > maxQuantity) val = maxQuantity;
                   setQuantity(val);
                 }}
                 min="1"
-                max="99"
+                max={Math.min(99, getCurrentStock())}
               />
               <button 
                 type="button" 
                 className="quantity-btn quantity-increase"
                 onClick={() => handleQuantityChange(1)}
-                disabled={quantity >= 99}
+                disabled={quantity >= Math.min(99, getCurrentStock())}
               >
                 +
               </button>
@@ -221,16 +324,18 @@ export default function ProductDetail() {
             <button 
               className="add-to-cart-btn"
               onClick={handleAddToCart}
-              disabled={!product.inStock}
+              disabled={!product?.inStock || selectedSizeIndex < 0 || getCurrentStock() === 0}
             >
-              {product.inStock ? t('products.addToCart') : t('products.outOfStock')}
+              {!product?.inStock || getCurrentStock() === 0 ? t('products.outOfStock') : 
+               selectedSizeIndex < 0 ? 'Select size' : t('products.addToCart')}
             </button>
             <button 
               className="buy-now-btn" 
               onClick={handleBuyNow}
-              disabled={!product.inStock}
+              disabled={!product?.inStock || selectedSizeIndex < 0 || getCurrentStock() === 0}
             >
-              {product.inStock ? t('products.buyNow') : t('products.outOfStock')}
+              {!product?.inStock || getCurrentStock() === 0 ? t('products.outOfStock') : 
+               selectedSizeIndex < 0 ? 'Select size' : t('products.buyNow')}
             </button>
           </div>
         </div>
@@ -267,11 +372,22 @@ export default function ProductDetail() {
           {activeTab === 'sizes' && (
             <div className="sizes-content">
               <h3>{t('products.sizes')}:</h3>
-              <div className="available-sizes">
-                {product.sizes.map((size, index) => (
-                  <span key={index} className="size-badge">{size}</span>
-                ))}
-              </div>
+              {product.variations.map((variation, varIndex) => (
+                <div key={varIndex} className="variation-sizes">
+                  <h4>{getLocalized(variation.color)}:</h4>
+                  <div className="available-sizes">
+                    {variation.sizeOptions.map((sizeOption, sizeIndex) => (
+                      <span 
+                        key={sizeIndex} 
+                        className={`size-badge ${sizeOption.stock === 0 ? 'out-of-stock' : ''}`}
+                      >
+                        Size {sizeOption.size} - {sizeOption.price.toLocaleString()}₫ 
+                        {sizeOption.stock === 0 ? ' (Out of stock)' : ` (${sizeOption.stock} in stock)`}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
               <p className="size-guide">
                 Vui lòng tham khảo bảng size để chọn kích thước phù hợp nhất.
               </p>

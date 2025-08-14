@@ -8,18 +8,31 @@ export type ProductSpecification = {
   value: LocalizedString;
 };
 
+// Size option for each variation
+export type SizeOption = {
+  size: number;
+  price: number;
+  stock: number;
+};
+
+// Variation for color and size options
+export type ProductVariation = {
+  color: LocalizedString;
+  image?: string;
+  sizeOptions: SizeOption[];
+};
+
 export type Product = {
   _id: string; // MongoDB ObjectId as string
   name: LocalizedString;
-  price: number;
   image: string;
   images: string[];
-  shortDescription: LocalizedString;
+  shortDescription?: LocalizedString; // optional
   detailDescription: LocalizedString;
-  sizes: string[];
   specifications: ProductSpecification[];
+  weight: number; // in kilograms (kg)
+  variations: ProductVariation[];
   inStock: boolean;
-  weight: number; // in grams
   createdAt: string; // MongoDB timestamps
   updatedAt: string;
 };
