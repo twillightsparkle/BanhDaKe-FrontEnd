@@ -101,7 +101,8 @@ export default function Cart() {
         <p>{getTotalItems()} sản phẩm</p>
       </div>
 
-      <div className="cart-content">        <div className="cart-items">
+      <div className="cart-content">        
+        <div className="cart-items">
           {cartItems.map((item) => (
             <div key={`${item.product._id}-${item.selectedSize}`} className="cart-item">
               <div className="cart-item-image">
@@ -199,7 +200,7 @@ export default function Cart() {
               
               {shippingCountry && (
                 <div className="shipping-info">
-                  <p><strong>Trọng lượng ước tính:</strong> {(getTotalWeight()).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 0 })} kg</p>
+                  <p><strong>Trọng lượng ước tính:</strong> {getTotalWeight().toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 0 })} kg</p>
                   <p><strong>Phí cơ bản:</strong> {shippingFees.find(f => f.country === shippingCountry)?.baseFee.toLocaleString()}₫</p>
                   <p><strong>Phí theo kg:</strong> {shippingFees.find(f => f.country === shippingCountry)?.perKgRate.toLocaleString()}₫/kg</p>
                 </div>

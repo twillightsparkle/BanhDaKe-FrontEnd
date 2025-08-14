@@ -3,14 +3,14 @@ import type { ReactNode } from 'react';
 import type { Product } from '../types';
 
 export interface CartItem {
-  product: Product;
+  product: Product & { price: number }; // Add price for cart compatibility
   quantity: number;
   selectedSize: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantity: number, selectedSize: string) => void;
+  addToCart: (product: Product & { price: number }, quantity: number, selectedSize: string) => void;
   removeFromCart: (productId: string, selectedSize: string) => void;
   updateQuantity: (productId: string, selectedSize: string, quantity: number) => void;
   clearCart: () => void;
@@ -38,7 +38,7 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [shippingCountry, setShippingCountry] = useState<string | null>(null);
-  const addToCart = (product: Product, quantity: number, selectedSize: string) => {
+  const addToCart = (product: Product & { price: number }, quantity: number, selectedSize: string) => {
     setCartItems(prevItems => {
       const existingItemIndex = prevItems.findIndex(
         item => item.product._id === product._id && item.selectedSize === selectedSize
