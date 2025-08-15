@@ -3,16 +3,18 @@ import type { ReactNode } from 'react';
 import type { Product } from '../types';
 
 export interface CartItem {
-  product: Product & { price: number }; // Add price for cart compatibility
+  product: Product; // Add price for cart compatibility
   quantity: number;
+  price: number;
+  selectedColor: string; // In English
   selectedSize: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product & { price: number }, quantity: number, selectedSize: string) => void;
-  removeFromCart: (productId: string, selectedSize: string) => void;
-  updateQuantity: (productId: string, selectedSize: string, quantity: number) => void;
+  addToCart: (product: Product, quantity: number, price: number, selectedColor: string, selectedSize: string) => void;
+  removeFromCart: (productId: string, selectedSize: string, selectedColor: string) => void;
+  updateQuantity: (productId: string, selectedSize: string, selectedColor: string, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -38,10 +40,10 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [shippingCountry, setShippingCountry] = useState<string | null>(null);
-  const addToCart = (product: Product & { price: number }, quantity: number, selectedSize: string) => {
+  const addToCart = (product: Product, quantity: number, price: number, selectedColor: string, selectedSize: string) => {
     setCartItems(prevItems => {
       const existingItemIndex = prevItems.findIndex(
-        item => item.product._id === product._id && item.selectedSize === selectedSize
+        item => item.product._id === product._id && item.selectedSize === selectedSize && item.selectedColor === selectedColor
       );
 
       if (existingItemIndex > -1) {
@@ -54,29 +56,35 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         return updatedItems;
       } else {
         // Add new item
-        const newItem = { product, quantity, selectedSize };
+        const newItem: CartItem = { 
+          product, 
+          quantity, 
+          price,
+          selectedColor,
+          selectedSize 
+        };
         return [...prevItems, newItem];
       }
     });
   };
 
-  const removeFromCart = (productId: string, selectedSize: string) => {
+  const removeFromCart = (productId: string, selectedSize: string, selectedColor: string) => {
     setCartItems(prevItems => 
       prevItems.filter(item => 
-        !(item.product._id === productId && item.selectedSize === selectedSize)
+        !(item.product._id === productId && item.selectedSize === selectedSize && item.selectedColor === selectedColor)
       )
     );
   };
 
-  const updateQuantity = (productId: string, selectedSize: string, quantity: number) => {
+  const updateQuantity = (productId: string, selectedSize: string, selectedColor: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId, selectedSize);
+      removeFromCart(productId, selectedSize, selectedColor);
       return;
     }
 
     setCartItems(prevItems =>
       prevItems.map(item =>
-        item.product._id === productId && item.selectedSize === selectedSize
+        item.product._id === productId && item.selectedSize === selectedSize && item.selectedColor === selectedColor
           ? { ...item, quantity }
           : item
       )
@@ -92,7 +100,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   const getTotalWeight = () => {

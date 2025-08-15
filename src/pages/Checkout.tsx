@@ -51,8 +51,9 @@ export default function Checkout() {
         productId: item.product._id,
         productName: getLocalized(item.product.name),
         quantity: item.quantity,
-        price: item.product.price,
-        selectedSize: item.selectedSize
+        price: item.price,
+        selectedSize: item.selectedSize,
+        selectedColor: item.selectedColor
       }));
 
       // Create order request
@@ -112,13 +113,20 @@ export default function Checkout() {
           <h2>Order Summary</h2>
           <div className="order-items">
             {cartItems.map((item, index) => (
-              <div key={`${item.product._id}-${item.selectedSize}-${index}`} className="order-item">
+              <div key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}-${index}`} className="order-item">
                 <img src={item.product.image} alt={getLocalized(item.product.name)} className="item-image" />
                 <div className="item-details">
                   <h3>{getLocalized(item.product.name)}</h3>
+                  <p>Color: {(() => {
+                    // Find the color variation that matches the selected color (stored in English)
+                    const colorVariation = item.product.variations?.find(variation =>
+                      variation.color.en === item.selectedColor
+                    );
+                    return colorVariation ? getLocalized(colorVariation.color) : item.selectedColor;
+                  })()}</p>
                   <p>Size: {item.selectedSize}</p>
                   <p>Quantity: {item.quantity}</p>
-                  <p className="item-price">{(item.product.price * item.quantity).toLocaleString()}₫</p>
+                  <p className="item-price">{(item.price * item.quantity).toLocaleString()}₫</p>
                 </div>
               </div>
             ))}

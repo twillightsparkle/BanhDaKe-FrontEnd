@@ -3,6 +3,7 @@ export interface OrderItem {
   productName: string;
   quantity: number;
   price: number;
+  selectedColor: string;
   selectedSize: string;
 }
 

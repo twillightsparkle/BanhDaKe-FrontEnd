@@ -62,14 +62,14 @@ export default function Cart() {
     }
   }, [shippingCountry, shippingFees, getTotalWeight]);
 
-  const handleQuantityChange = (productId: string, selectedSize: string, newQuantity: number) => {
+  const handleQuantityChange = (productId: string, selectedSize: string, selectedColor: string, newQuantity: number) => {
     if (newQuantity >= 1 && newQuantity <= 99) {
-      updateQuantity(productId, selectedSize, newQuantity);
+      updateQuantity(productId, selectedSize, selectedColor, newQuantity);
     }
   };
 
-  const handleRemoveItem = (productId: string, selectedSize: string) => {
-    removeFromCart(productId, selectedSize);
+  const handleRemoveItem = (productId: string, selectedSize: string, selectedColor: string) => {
+    removeFromCart(productId, selectedSize, selectedColor);
   };
 
   const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -104,22 +104,29 @@ export default function Cart() {
       <div className="cart-content">        
         <div className="cart-items">
           {cartItems.map((item) => (
-            <div key={`${item.product._id}-${item.selectedSize}`} className="cart-item">
+            <div key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}`} className="cart-item">
               <div className="cart-item-image">
                 <img src={item.product.image} alt={getLocalized(item.product.name)} />
               </div>
               
               <div className="cart-item-details">
                 <h3 className="cart-item-name">{getLocalized(item.product.name)}</h3>
+                <p className="cart-item-color">Màu sắc: {(() => {
+                  // Find the color variation that matches the selected color (stored in English)
+                  const colorVariation = item.product.variations?.find(variation =>
+                    variation.color.en === item.selectedColor
+                  );
+                  return colorVariation ? getLocalized(colorVariation.color) : item.selectedColor;
+                })()}</p>
                 <p className="cart-item-size">Kích thước: {item.selectedSize}</p>
-                <p className="cart-item-price">{item.product.price.toLocaleString()}₫</p>
+                <p className="cart-item-price">{item.price.toLocaleString()}₫</p>
               </div>
 
               <div className="cart-item-quantity">
                 <label>Số lượng:</label>
                 <div className="quantity-controls">
                   <button 
-                    onClick={() => handleQuantityChange(item.product._id, item.selectedSize, item.quantity - 1)}
+                    onClick={() => handleQuantityChange(item.product._id, item.selectedSize, item.selectedColor, item.quantity - 1)}
                     disabled={item.quantity <= 1}
                     className='quantity-btn quantity-decrease'
                   >
@@ -128,12 +135,12 @@ export default function Cart() {
                   <input 
                     type="number" 
                     value={item.quantity}
-                    onChange={(e) => handleQuantityChange(item.product._id, item.selectedSize, parseInt(e.target.value) || 1)}
+                    onChange={(e) => handleQuantityChange(item.product._id, item.selectedSize, item.selectedColor, parseInt(e.target.value) || 1)}
                     min="1"
                     max="99"
                   />
                   <button 
-                    onClick={() => handleQuantityChange(item.product._id, item.selectedSize, item.quantity + 1)}
+                    onClick={() => handleQuantityChange(item.product._id, item.selectedSize, item.selectedColor, item.quantity + 1)}
                     disabled={item.quantity >= 99}
                     className="quantity-btn quantity-increase"
                   >
@@ -143,13 +150,13 @@ export default function Cart() {
               </div>
 
               <div className="cart-item-total">
-                <p>{(item.product.price * item.quantity).toLocaleString()}₫</p>
+                <p>{(item.price * item.quantity).toLocaleString()}₫</p>
               </div>
 
               <div className="cart-item-actions">
                 <button 
                   className="remove-item-btn"
-                  onClick={() => handleRemoveItem(item.product._id, item.selectedSize)}
+                  onClick={() => handleRemoveItem(item.product._id, item.selectedSize, item.selectedColor)}
                 >
                   Xóa
                 </button>

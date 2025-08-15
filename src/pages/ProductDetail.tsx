@@ -65,48 +65,68 @@ export default function ProductDetail() {
 
     fetchProduct();
   }, [id]);  const handleAddToCart = () => {
-    if (product && selectedSizeIndex >= 0) {
-      const variation = getCurrentVariation();
-      const sizeOption = getCurrentSizeOption();
-      if (variation && sizeOption) {
-        // Check if quantity exceeds available stock
-        if (quantity > sizeOption.stock) {
-          alert(`Sorry, only ${sizeOption.stock} items are available in stock.`);
-          return;
-        }
-        // Create a simplified product object for cart compatibility
-        const cartProduct = {
-          ...product,
-          price: sizeOption.price // Add price for cart compatibility
-        };
-        addToCart(cartProduct, quantity, sizeOption.size.toString());
-        alert(`Added ${quantity} x ${getLocalized(product.name)} (Color: ${getLocalized(variation.color)}, Size: ${sizeOption.size}) to cart!`);
+    if (!product) return;
+    
+    if (selectedColorIndex < 0) {
+      alert('Please select a color first.');
+      return;
+    }
+    
+    if (selectedSizeIndex < 0) {
+      alert('Please select a size first.');
+      return;
+    }
+
+    const variation = getCurrentVariation();
+    const sizeOption = getCurrentSizeOption();
+    if (variation && sizeOption) {
+      // Check if quantity exceeds available stock
+      if (quantity > sizeOption.stock) {
+        alert(`Sorry, only ${sizeOption.stock} items are available in stock.`);
+        return;
       }
-    } else if (product && selectedSizeIndex < 0) {
-      alert('Please select a size before adding to cart.');
+      
+      if (sizeOption.stock === 0) {
+        alert('This size is currently out of stock.');
+        return;
+      }
+      
+      // Create a simplified product object for cart compatibility
+      addToCart(product, quantity, sizeOption.price, variation.color.en, sizeOption.size.toString());
+      alert(`Added ${quantity} x ${getLocalized(product.name)} (Color: ${getLocalized(variation.color)}, Size: ${sizeOption.size}) to cart!`);
     }
   };
 
   const handleBuyNow = () => {
-    if (product && selectedSizeIndex >= 0) {
-      const variation = getCurrentVariation();
-      const sizeOption = getCurrentSizeOption();
-      if (variation && sizeOption) {
-        // Check if quantity exceeds available stock
-        if (quantity > sizeOption.stock) {
-          alert(`Sorry, only ${sizeOption.stock} items are available in stock.`);
-          return;
-        }
-        // Create a simplified product object for cart compatibility
-        const cartProduct = {
-          ...product,
-          price: sizeOption.price // Add price for cart compatibility
-        };
-        addToCart(cartProduct, quantity, sizeOption.size.toString());
-        navigate('/cart');
+    if (!product) return;
+    
+    if (selectedColorIndex < 0) {
+      alert('Please select a color first.');
+      return;
+    }
+    
+    if (selectedSizeIndex < 0) {
+      alert('Please select a size first.');
+      return;
+    }
+
+    const variation = getCurrentVariation();
+    const sizeOption = getCurrentSizeOption();
+    if (variation && sizeOption) {
+      // Check if quantity exceeds available stock
+      if (quantity > sizeOption.stock) {
+        alert(`Sorry, only ${sizeOption.stock} items are available in stock.`);
+        return;
       }
-    } else if (product && selectedSizeIndex < 0) {
-      alert('Please select a size before buying.');
+      
+      if (sizeOption.stock === 0) {
+        alert('This size is currently out of stock.');
+        return;
+      }
+      
+      // Create a simplified product object for cart compatibility
+      addToCart(product, quantity, sizeOption.price, variation.color.en, sizeOption.size.toString());
+      navigate('/cart');
     }
   };
 
@@ -218,7 +238,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Color Selector */}
-          {product.variations && product.variations.length > 1 && (
+          {product.variations && product.variations.length >= 1 && (
             <div className="color-selector">
               <label>Color:</label>
               <div className="color-options">
@@ -324,18 +344,16 @@ export default function ProductDetail() {
             <button 
               className="add-to-cart-btn"
               onClick={handleAddToCart}
-              disabled={!product?.inStock || selectedSizeIndex < 0 || getCurrentStock() === 0}
+              disabled={!product?.inStock}
             >
-              {!product?.inStock || getCurrentStock() === 0 ? t('products.outOfStock') : 
-               selectedSizeIndex < 0 ? 'Select size' : t('products.addToCart')}
+              {!product?.inStock ? t('products.outOfStock') : t('products.addToCart')}
             </button>
             <button 
               className="buy-now-btn" 
               onClick={handleBuyNow}
-              disabled={!product?.inStock || selectedSizeIndex < 0 || getCurrentStock() === 0}
+              disabled={!product?.inStock}
             >
-              {!product?.inStock || getCurrentStock() === 0 ? t('products.outOfStock') : 
-               selectedSizeIndex < 0 ? 'Select size' : t('products.buyNow')}
+              {!product?.inStock ? t('products.outOfStock') : t('products.buyNow')}
             </button>
           </div>
         </div>
